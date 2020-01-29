@@ -31,7 +31,7 @@ public class MoneyTransferRequestTest {
 	public void testAmount() {
 		MoneyTransferRequest moneyTransferRequest = new MoneyTransferRequest();
 		
-		moneyTransferRequest.setAmount(50);
-		Assert.assertEquals(50, moneyTransferRequest.getAmount().intValue());
+		moneyTransferRequest.setAmount(50.0);
+		Assert.assertEquals(new Double(50.0), moneyTransferRequest.getAmount());
 	}
 }

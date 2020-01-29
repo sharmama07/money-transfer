@@ -29,8 +29,8 @@ public class DBInitializer {
             
             createAccountTable();
             
-            insertAccount(1, 10000);
-            insertAccount(2, 10000);
+            insertAccount(1, 10000.0);
+            insertAccount(2, 10000.0);
         } catch (SQLException ex) {
         	LOG.log(Level.SEVERE, ex.getMessage(), ex);
         	LOG.log(Level.SEVERE, "Cannot initiallize DB, hence exiting the system");
@@ -57,7 +57,7 @@ public class DBInitializer {
 		try (Connection con = DriverManager.getConnection(url);
 	             Statement stm = con.createStatement()) {
 			// AUTO_INCREMENT
-			String sql = "CREATE TABLE ACCOUNT(id INT PRIMARY KEY, amount INT)";
+			String sql = "CREATE TABLE ACCOUNT(id INT PRIMARY KEY, amount DOUBLE)";
 	        stm.executeUpdate(sql);
 	        LOG.info("Table ACCOUNT Created.");
 		}catch(Exception ex) {
@@ -66,12 +66,12 @@ public class DBInitializer {
 		
 	}
 
-	public void insertAccount(Integer accountId, Integer amount) throws SQLException {
+	public void insertAccount(Integer accountId, Double amount) throws SQLException {
 		try (Connection con = DriverManager.getConnection(url);
 	             PreparedStatement stm = con.prepareStatement(insertSQL)) {
 			
 			stm.setInt(1, accountId);
-			stm.setInt(2, amount);
+			stm.setDouble(2, amount);
 			stm.executeUpdate();	
 		}
 		
