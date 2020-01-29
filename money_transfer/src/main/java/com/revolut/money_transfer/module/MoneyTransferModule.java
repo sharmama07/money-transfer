@@ -7,6 +7,7 @@ import com.revolut.money_transfer.db.dao.IAccountDAO;
 import com.revolut.money_transfer.routes.MoneyTransferRoutes;
 import com.revolut.money_transfer.service.AccountService;
 import com.revolut.money_transfer.service.IAccountService;
+import com.revolut.money_transfer.validation_engine.MoneyTransferRequestValidator;
 
 /**
  * 
@@ -24,6 +25,7 @@ public class MoneyTransferModule extends AbstractModule {
 		bind(IAccountService.class).to(AccountService.class);
 		bind(MoneyTransferApplication.class);
 		bind(MoneyTransferRoutes.class);
+		bind(MoneyTransferRequestValidator.class);
 		
 	}
 

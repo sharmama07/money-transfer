@@ -229,6 +229,34 @@ public class MoneyTransferFunctionalTest {
 
 	}	
 	
+	@Test
+	public void testTransferAmountWithInvalidAccountId() throws ClientProtocolException, IOException, SQLException {
+		
+		dbInitializer.insertAccount(16, 50.0);
+		
+		HttpPost request = new HttpPost("http://localhost:4567/money-transfer");
+		request.addHeader("Content-Type", "application/json");
+		MoneyTransferRequest reqBody = new MoneyTransferRequest(16,17,50.50);
+		request.setEntity(new StringEntity(reqBody.toString()));
+		 
+	    // When
+	    HttpResponse httpResponse = HttpClientBuilder.create().build().execute( request );
+	    
+	    String jsonFromResponse = EntityUtils.toString(httpResponse.getEntity());
+	    StandardResponse response = new Gson().fromJson(jsonFromResponse, StandardResponse.class);
+	    
+	    Assert.assertEquals(400, httpResponse.getStatusLine().getStatusCode());
+	    Assert.assertEquals("Failure", response.getStatus());
+	    Assert.assertEquals(400, response.getHttpStatus().intValue());
+	    Assert.assertEquals("Validation fails, So Money Transfer failed", response.getMessage());
+	    Assert.assertEquals("application/json", ContentType.getOrDefault(httpResponse.getEntity()).getMimeType());
+	    
+	    Account acc16 = getAccount(16);Account acc17 = getAccount(17);
+	    Assert.assertEquals(new Double(50.0), acc16.getAmount());
+	    Assert.assertNull(acc17);
+
+	}	
+	
 	private Thread getNewTransaction(Integer fromAccountId, Integer toAccountId, Double amount) {
 		Thread t = new Thread() {
 			@Override
@@ -268,6 +296,9 @@ public class MoneyTransferFunctionalTest {
 	    HttpResponse httpResponse = HttpClientBuilder.create().build().execute( request );
 	    
 	    String jsonFromResponse = EntityUtils.toString(httpResponse.getEntity());
+	    if(jsonFromResponse!=null && jsonFromResponse.contains("404 Not found")) {
+	    	return null;
+	    }
 	    return new Gson().fromJson(jsonFromResponse, Account.class);
 }
 

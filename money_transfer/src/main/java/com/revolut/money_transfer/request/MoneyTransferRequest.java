@@ -2,7 +2,7 @@ package com.revolut.money_transfer.request;
 
 import com.google.gson.Gson;
 
-public class MoneyTransferRequest {
+public class MoneyTransferRequest implements InputRequest{
 	
 	private Integer fromAccountId;
 	

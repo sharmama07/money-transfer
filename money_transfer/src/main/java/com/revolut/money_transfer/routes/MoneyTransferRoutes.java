@@ -10,6 +10,7 @@ import com.google.inject.Inject;
 import com.revolut.money_transfer.request.MoneyTransferRequest;
 import com.revolut.money_transfer.response.StandardResponse;
 import com.revolut.money_transfer.service.IAccountService;
+import com.revolut.money_transfer.validation_engine.MoneyTransferRequestValidator;
 
 /**
  * 
@@ -26,6 +27,9 @@ public class MoneyTransferRoutes {
 	@Inject
 	private IAccountService accountService;
 	
+	@Inject
+	private MoneyTransferRequestValidator validator ;
+	
 	public void initiallize() {
 		
 		// get account using account id
@@ -39,18 +43,25 @@ public class MoneyTransferRoutes {
 		post("/money-transfer", (request, response) -> {
 			MoneyTransferRequest moneyTransferRequest = new Gson().fromJson(request.body(), MoneyTransferRequest.class);
 			
-			boolean res = accountService.transferAmount(moneyTransferRequest.getFromAccountId(), 
-						moneyTransferRequest.getToAccountId(), moneyTransferRequest.getAmount()*1.0);
-			
-			
-			response.type("application/json");
 			StandardResponse responeFromAPI;
-			if(res) {
-				response.status(200);
-				responeFromAPI = new StandardResponse("Success", HttpStatus.SC_OK, "Money Transfer successful");
+			response.type("application/json");
+			
+			if(validator.validate(moneyTransferRequest)) {
+			
+				boolean res = accountService.transferAmount(moneyTransferRequest.getFromAccountId(), 
+							moneyTransferRequest.getToAccountId(), moneyTransferRequest.getAmount()*1.0);
+				
+				
+				if(res) {
+					response.status(200);
+					responeFromAPI = new StandardResponse("Success", HttpStatus.SC_OK, "Money Transfer successful");
+				} else {
+					response.status(500);
+					responeFromAPI = new StandardResponse("Failure", HttpStatus.SC_INTERNAL_SERVER_ERROR, "Money Transfer failed");
+				}
 			} else {
-				response.status(500);
-				responeFromAPI = new StandardResponse("Failure", HttpStatus.SC_INTERNAL_SERVER_ERROR, "Money Transfer failed");
+				response.status(400);
+				responeFromAPI = new StandardResponse("Failure", HttpStatus.SC_BAD_REQUEST, "Validation fails, So Money Transfer failed");
 			}
 			return new Gson().toJson(responeFromAPI);
 		});
