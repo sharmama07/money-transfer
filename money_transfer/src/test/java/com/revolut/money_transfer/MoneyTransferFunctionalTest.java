@@ -199,6 +199,36 @@ public class MoneyTransferFunctionalTest {
 	    Assert.assertEquals(new Double(990.0), acc13.getAmount());
 	}
 	
+	// Negative test case of insufficient balance
+	@Test
+	public void testTransferAmountWithOneRequestWithInsufficientBalance() throws ClientProtocolException, IOException, SQLException {
+		
+		dbInitializer.insertAccount(14, 50.0);
+		dbInitializer.insertAccount(15, 1000.0);
+		
+		HttpPost request = new HttpPost("http://localhost:4567/money-transfer");
+		request.addHeader("Content-Type", "application/json");
+		MoneyTransferRequest reqBody = new MoneyTransferRequest(14,15,50.50);
+		request.setEntity(new StringEntity(reqBody.toString()));
+		 
+	    // When
+	    HttpResponse httpResponse = HttpClientBuilder.create().build().execute( request );
+	    
+	    String jsonFromResponse = EntityUtils.toString(httpResponse.getEntity());
+	    StandardResponse response = new Gson().fromJson(jsonFromResponse, StandardResponse.class);
+	    
+	    Assert.assertEquals(500, httpResponse.getStatusLine().getStatusCode());
+	    Assert.assertEquals("Failure", response.getStatus());
+	    Assert.assertEquals(500, response.getHttpStatus().intValue());
+	    Assert.assertEquals("Money Transfer failed", response.getMessage());
+	    Assert.assertEquals("application/json", ContentType.getOrDefault(httpResponse.getEntity()).getMimeType());
+	    
+	    Account acc14 = getAccount(14);Account acc15 = getAccount(15);
+	    Assert.assertEquals(new Double(50.0), acc14.getAmount());
+	    Assert.assertEquals(new Double(1000.00), acc15.getAmount());
+
+	}	
+	
 	private Thread getNewTransaction(Integer fromAccountId, Integer toAccountId, Double amount) {
 		Thread t = new Thread() {
 			@Override
