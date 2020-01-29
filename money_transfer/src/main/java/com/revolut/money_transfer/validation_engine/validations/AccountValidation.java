@@ -9,7 +9,7 @@ import com.revolut.money_transfer.request.MoneyTransferRequest;
 
 public class AccountValidation implements IValidation<MoneyTransferRequest> {
 
-	private static Logger LOG = Logger.getLogger(AccountValidation.class.getName());
+	private static final Logger LOG = Logger.getLogger(AccountValidation.class.getName());
 		
 	private String message = "";
 

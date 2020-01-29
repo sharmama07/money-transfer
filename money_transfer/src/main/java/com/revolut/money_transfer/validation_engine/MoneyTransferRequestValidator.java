@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.revolut.money_transfer.db.dao.IAccountDAO;
 import com.revolut.money_transfer.request.MoneyTransferRequest;
 import com.revolut.money_transfer.validation_engine.validations.AccountValidation;
+import com.revolut.money_transfer.validation_engine.validations.AmountValidation;
 import com.revolut.money_transfer.validation_engine.validations.IValidation;
 
 public class MoneyTransferRequestValidator extends Validator<MoneyTransferRequest> {
@@ -18,6 +19,7 @@ public class MoneyTransferRequestValidator extends Validator<MoneyTransferReques
 	protected List<IValidation<MoneyTransferRequest>> getValidations() {
 		List<IValidation<MoneyTransferRequest>> validations = new ArrayList<>(1);
 		validations.add(new AccountValidation(accountDAO));
+		validations.add(new AmountValidation());
 		return validations;
 	}
 
