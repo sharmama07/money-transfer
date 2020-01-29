@@ -3,8 +3,6 @@ package com.revolut.money_transfer.model;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.revolut.money_transfer.model.Account;
-
 public class AccountTest {
 
 	@Test
