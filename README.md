@@ -1,5 +1,5 @@
 # money-transfer
-Money Transfer application is a stand alone multi-threaded Java application to transfer amount from one account to another
+Money Transfer application is a maven stand alone multi-threaded Java application to transfer amount from one account to another
 
 The main focus of this application is to handle the concurrency without corrupted the account's state during fund transfer.
 
@@ -25,7 +25,7 @@ Application, when you start using main class, performs following operation in or
  Technologies & References
  1) Web server - Embedded Jetty Server URL http://localhost:4567/
  		SparkJava is used to create quick server and exposing REST API end points 
- 2) Core java, Google guice, maven
+ 2) Core java, Google guice, maven, httpclient
  3) Database : H2 in memory database (URL jdbc:h2:~/testDB)
  4) Testing using JUnit
  
@@ -40,5 +40,5 @@ Application, when you start using main class, performs following operation in or
                  {
                  "fromAccountId": 1,
                  "toAccountId": 2,
-                 amount: 100
+                 "amount": 100.0
                  }
